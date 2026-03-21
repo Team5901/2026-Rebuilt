@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left of hopper start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "left to middle intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Return leftside auto"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
