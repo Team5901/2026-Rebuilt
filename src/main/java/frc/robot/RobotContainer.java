@@ -8,9 +8,11 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -50,10 +52,25 @@ public class RobotContainer {
     private final Intake INTAKE = new Intake();
     private final Shooter SHOOTER = new Shooter();
     private final Indexer INDEXER = new Indexer();
+    private final SendableChooser <Command> AutoChooser;
 
     public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData(autoselection,AutoChooser);
+NamedCommands.registerCommand("AutoShoot", new SequentialCommandGroup(
+     Commands.runOnce(() -> SHOOTER.setWantedState(ShooterState.ON)),
+            new WaitCommand(3.0),
+           Commands.runOnce(() -> INDEXER.setWantedState(IndexerState.ON)),
+            new WaitCommand(7),
+            new InstantCommand(() -> SHOOTER.setWantedState(ShooterState.IDLE)),
+            new InstantCommand(() -> INDEXER.setWantedState(IndexerState.IDLE))
+            // Finally idle for the rest of auton
+           // drivetrain.applyRequest(() -> idle)
+                  //      Commands.runOnce(() -> INDEXER.setWantedState(IndexerState.IDLE)),
+                  //      Commands.runOnce(() -> SHOOTER.setWantedState(ShooterState.IDLE))
+
+        ));
+
+        AutoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("autoselection",AutoChooser);
         configureBindings();
     }
 
@@ -116,29 +133,30 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
-    public Command getAutonomousCommand() {
+   public Command getAutonomousCommand() {
+   return AutoChooser.getSelected();
  // Simple drive forward auton
-        final var idle = new SwerveRequest.Idle();
-        return new SequentialCommandGroup(
+  // dorsey      final var idle = new SwerveRequest.Idle();
+  // dorsey      return new SequentialCommandGroup(
             // Reset our field centric heading to match the robot
             // facing away from our alliance station wall (0 deg).
-            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
+  // dorsey          drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
             // Then slowly drive forward (away from us) for 5 seconds.
             //drivetrain.applyRequest(() ->
               //  drive.withVelocityX(1)
                 //    .withVelocityY(0)
                   //  .withRotationalRate(0)
             //)
-            Commands.runOnce(() -> SHOOTER.setWantedState(ShooterState.ON)),
-            new WaitCommand(3.0),
-            Commands.runOnce(() -> INDEXER.setWantedState(IndexerState.ON)),
-            new WaitCommand(7),
-            new InstantCommand(() -> SHOOTER.setWantedState(ShooterState.IDLE)),
-            new InstantCommand(() -> INDEXER.setWantedState(IndexerState.IDLE))
+   // dorsey         Commands.runOnce(() -> SHOOTER.setWantedState(ShooterState.ON)),
+  // dorsey          new WaitCommand(3.0),
+  // dorsey          Commands.runOnce(() -> INDEXER.setWantedState(IndexerState.ON)),
+  // dorsey          new WaitCommand(7),
+  // dorsey          new InstantCommand(() -> SHOOTER.setWantedState(ShooterState.IDLE)),
+  // dorsey          new InstantCommand(() -> INDEXER.setWantedState(IndexerState.IDLE))
             // Finally idle for the rest of auton
            // drivetrain.applyRequest(() -> idle)
                   //      Commands.runOnce(() -> INDEXER.setWantedState(IndexerState.IDLE)),
                   //      Commands.runOnce(() -> SHOOTER.setWantedState(ShooterState.IDLE))
-        );
+  // dorsey      );
     }
 }

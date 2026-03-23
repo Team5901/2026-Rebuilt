@@ -20,7 +20,7 @@ public class Shooter extends SubsystemBase{
     /// 
     /// 
     /// 
-    private VoltageOut ON = new VoltageOut(5.6);
+    private VoltageOut ON = new VoltageOut(7.0);
     //
     ///
     /// 
