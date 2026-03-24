@@ -52,7 +52,7 @@ public class RobotContainer {
     private final Intake INTAKE = new Intake();
     private final Shooter SHOOTER = new Shooter();
     private final Indexer INDEXER = new Indexer();
-    private final SendableChooser <Command> AutoChooser;
+    private final SendableChooser<Command> AutoChooser;
 
     public RobotContainer() {
 NamedCommands.registerCommand("AutoShoot", new SequentialCommandGroup(
